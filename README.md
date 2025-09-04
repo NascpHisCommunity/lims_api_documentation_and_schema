@@ -5,7 +5,6 @@ This repository contains the official **schemas, sample payloads, and documentat
 The API supports the **exchange of laboratory sample and result data** between:
 - **Sending Facilities / EMRs**  
 - **PCR Laboratories (LIMS)**  
-- **National Data Repositories (NDR/NMRS)**  
 
 ---
 
