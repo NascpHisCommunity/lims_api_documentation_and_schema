@@ -42,7 +42,7 @@ lims_api_documentation_and_schema/
 │
 └── README.md                                # Documentation (this file)
 
-##
+--
 📑 Schema Highlights
 1. Manifests
 
