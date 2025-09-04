@@ -1,0 +1,109 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://example.org/schemas/feedback-notification.schema.json",
+    "title": "Feedback Notification Response",
+    "description": "Batch- and sample-level notification/issue feedback for a manifest between a sending facility and a receiving PCR lab.",
+    "type": "object",
+    "additionalProperties": false,
+  
+    "required": [
+      "notificationID",
+      "sendingFacilityID",
+      "sendingFacilityName",
+      "manifestID",
+      "receivingPCRLabID",
+      "receivingPCRLabName",
+      "dateIssueReceived",
+      "dateIssueReported",
+      "reportedBy"
+    ],
+  
+    "properties": {
+      "notificationID": {
+        "type": "string",
+        "description": "Unique notification identifier."
+      },
+  
+      "sendingFacilityID": {
+        "type": "string",
+        "description": "ID of the facility that sent the manifest (shape consistent with manifest/result schemas)."
+      },
+      "sendingFacilityName": {
+        "type": "string",
+        "description": "Name of the sending facility."
+      },
+  
+      "manifestID": {
+        "type": "string",
+        "description": "Manifest ID for the affected batch (same ID used in result payloads)."
+      },
+  
+      "receivingPCRLabID": {
+        "type": "string",
+        "description": "LIMS/Lab ID of the receiving PCR laboratory."
+      },
+      "receivingPCRLabName": {
+        "type": "string",
+        "description": "Name of the receiving PCR laboratory."
+      },
+  
+      "sample": {
+        "type": "object",
+        "description": "Specimen-level linkage for the issue.",
+        "required": ["sampleID"],
+        "properties": {
+          "sampleID": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 20,
+            "description": "The specific sample identifier (matches manifest/result schema)."
+          }
+        }
+      },
+  
+      "issueType": {
+        "description": "Code from NOTIFICATION_ISSUE_TYPE code set.",
+        "allOf": [{ "$ref": "#/$defs/NOTIFICATION_ISSUE_TYPE" }]
+      },
+      "issueName": {
+        "type": "string",
+        "description": "Short human-readable label of the issue."
+      },
+      "issueDetails": {
+        "type": "string",
+        "description": "Detailed description of the issue (free text)."
+      },
+  
+      "dateIssueReceived": {
+        "type": "string",
+        "format": "date",
+        "description": "Date the issue/feedback was received."
+      },
+      "dateIssueReported": {
+        "type": "string",
+        "format": "date",
+        "description": "Date the issue was reported onward (e.g., to the program or partner)."
+      },
+      "reportedBy": {
+        "type": "string",
+        "description": "Name/role of the person or unit that reported the issue."
+      }
+    },
+  
+    "$defs": {
+      "NOTIFICATION_ISSUE_TYPE": {
+        "type": "string",
+        "enum": [
+          "MISSING_RESULT",
+          "WRONG_RESULT",
+          "PATIENT_ID_MISMATCH",
+          "SAMPLE_REJECTED",
+          "DUPLICATE_ENTRY",
+          "INCOMPLETE_RECORD",
+          "OTHER"
+        ],
+        "description": "Enumeration of issue codes as maintained in the NOTIFICATION_ISSUE_TYPE dictionary."
+      }
+    }
+  }
+  

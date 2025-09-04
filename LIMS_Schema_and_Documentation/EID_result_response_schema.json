@@ -1,0 +1,231 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://example.org/schemas/eid-result-response.schema.json",
+    "title": "EID Result Response",
+    "description": "Batch result payload returned by a PCR laboratory for Early Infant Diagnosis (EID) tests.",
+    "type": "object",
+    "additionalProperties": false,
+  
+    "required": [
+      "manifestID",
+      "receivingFacilityID",
+      "receivingFacilityName",
+      "sendingPCRLabID",
+      "sendingPCRLabName",
+      "testType",
+      "eidTestReport"
+    ],
+  
+    "properties": {
+      "manifestID": {
+        "type": "string",
+        "description": "The unique identifier for the batch whose results are being returned."
+      },
+  
+      "receivingFacilityID": {
+        "type": "string",
+        "description": "The unique identifier of the facility now receiving the result (used for validation)."
+      },
+      "receivingFacilityName": {
+        "type": "string",
+        "description": "The name of the facility now receiving the result."
+      },
+  
+      "sendingPCRLabID": {
+        "type": "string",
+        "description": "Identifier (e.g., LIMS ID) of the PCR lab sending/returning the results."
+      },
+      "sendingPCRLabName": {
+        "type": "string",
+        "description": "Name of the PCR lab sending/returning the results."
+      },
+  
+      "testType": {
+        "type": "integer",
+        "description": "Type of test whose results are being returned. Code set: RESULT_TEST_TYPE."
+      },
+  
+      "eidTestReport": {
+        "type": "array",
+        "minItems": 1,
+        "description": "Per-sample results for this batch.",
+        "items": { "$ref": "#/$defs/ResultItem" }
+      }
+    },
+  
+    "$defs": {
+      "ID_TYPECODE": {
+        "type": "string",
+        "enum": ["HOSPITALNO", "RECENCY", "CLIENTID"],
+        "description": "Code set for the realm/type of the patient ID."
+      },
+      "SEX": {
+        "type": "string",
+        "enum": ["F", "M"],
+        "description": "Sex code."
+      },
+      "EID_TEST_RESULT": {
+        "type": "string",
+        "enum": ["Positive", "Negative", "Indeterminate"],
+        "description": "Permitted EID qualitative results."
+      },
+      "RESULT_SAMPLE_STATUS": {
+        "type": "integer",
+        "description": "Program-defined status code specifying the state of the sample."
+      },
+      "EID_RESULT_REASON_NOT_TESTED": {
+        "type": "string",
+        "description": "Program-defined code/label describing reason not tested."
+      },
+      "EID_REJECTION_REASON": {
+        "type": "string",
+        "description": "Program-defined code indicating validity/rejection of the sample."
+      },
+  
+      "PatientID": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["idTypeCode", "idNumber"],
+        "properties": {
+          "idTypeCode": {
+            "allOf": [{ "$ref": "#/$defs/ID_TYPECODE" }],
+            "description": "Type code specifying the realm of idNumber."
+          },
+          "idNumber": {
+            "type": "string",
+            "description": "An identifier for the patient in the realm specified by idTypeCode."
+          }
+        }
+      },
+  
+      "ResultItem": {
+        "type": "object",
+        "additionalProperties": false,
+  
+        "required": [
+          "patientID",
+          "firstName",
+          "surName",
+          "sex",
+          "dateOfBirth",
+          "sampleID",
+          "pcrLabSampleNumber",
+          "visitDate",
+          "dateSampleReceivedAtPCRLab",
+          "testResult",
+          "assayDate",
+          "approvalDate",
+          "dateResultDispatched",
+          "sampleStatus",
+          "Rejection_Reason",
+          "testedBy",
+          "approvedBy"
+        ],
+  
+        "properties": {
+          "patientID": {
+            "allOf": [{ "$ref": "#/$defs/PatientID" }],
+            "description": "Patient identifier object."
+          },
+  
+          "firstName": { "type": "string", "description": "The patient's first name." },
+          "surName":   { "type": "string", "description": "The patient's last/family name." },
+          "sex":       { "allOf": [{ "$ref": "#/$defs/SEX" }], "description": "The patient's gender." },
+          "dateOfBirth": {
+            "type": "string",
+            "format": "date",
+            "description": "The patient's date of birth."
+          },
+  
+          "sampleID": {
+            "type": "string",
+            "description": "Laboratory Registration Number i.e., Sample ID (matches EMR sampleID)."
+          },
+          "pcrLabSampleNumber": {
+            "type": "string",
+            "description": "Sample number assigned in the PCR lab."
+          },
+  
+          "visitDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Visit date."
+          },
+          "dateSampleReceivedAtPCRLab": {
+            "type": "string",
+            "format": "date",
+            "description": "Date the sample was received at the PCR lab."
+          },
+  
+          "testResult": {
+            "allOf": [{ "$ref": "#/$defs/EID_TEST_RESULT" }],
+            "description": "EID qualitative result."
+          },
+          "assayDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Date the sample was actually tested."
+          },
+          "approvalDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Date the result was approved."
+          },
+          "dateResultDispatched": {
+            "type": "string",
+            "format": "date",
+            "description": "Date the EMR pulled the result from LIMS."
+          },
+  
+          "sampleStatus": {
+            "allOf": [{ "$ref": "#/$defs/RESULT_SAMPLE_STATUS" }],
+            "description": "Status code specifying the state of the sample."
+          },
+  
+          "Rejection_Reason": {
+            "allOf": [{ "$ref": "#/$defs/EID_REJECTION_REASON" }],
+            "description": "Coded field specifying if the sample is valid or rejected."
+          },
+          "Other_Rejection_Reason": {
+            "allOf": [{ "$ref": "#/$defs/EID_RESULT_REASON_NOT_TESTED" }],
+            "description": "Reason the sample was not tested, when applicable."
+          },
+  
+          "testedBy":   { "type": "string", "description": "Who performed the test." },
+          "approvedBy": { "type": "string", "description": "Who approved the results." },
+  
+          "Secondary_PCR_Lab_ID": {
+            "type": "string",
+            "description": "ID of PCR lab for transferred sample (conditional)."
+          },
+          "Secondary_PCR_Lab_Name": {
+            "type": "string",
+            "description": "Name of PCR lab for transferred sample (conditional)."
+          },
+          "Date_Transferred_Out": {
+            "type": "string",
+            "format": "date",
+            "description": "Date the sample was transferred (conditional)."
+          },
+          "Transfer_status": {
+            "type": "integer",
+            "description": "Program-defined code indicating status of sample transfer (conditional)."
+          }
+        },
+  
+        "allOf": [
+          {
+            "if": { "required": ["Transfer_status"] },
+            "then": {
+              "required": [
+                "Secondary_PCR_Lab_ID",
+                "Secondary_PCR_Lab_Name",
+                "Date_Transferred_Out"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+  

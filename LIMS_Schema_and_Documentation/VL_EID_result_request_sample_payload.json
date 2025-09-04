@@ -1,0 +1,10 @@
+{
+    "sendingFacilityID": "FAC-ABJ-00123",
+    "sendingFacilityName": "General Hospital Maitama",
+    "receivingPCRLabID": "LIMS150002",
+    "receivingPCRLabName": "National Reference Lab Abuja",
+    "testType": 1,
+    "manifestID": "MANI123456",
+    "transferStatus": false
+  }
+  

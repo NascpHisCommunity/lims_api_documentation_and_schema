@@ -1,0 +1,18 @@
+{
+    "notificationID": "NOTIF-2025-0002",
+    "sendingFacilityID": "FAC1234567",
+    "sendingFacilityName": "General Hospital Maitama",
+    "manifestID": "MANI123456",
+    "receivingPCRLabID": "LIMS150002",
+    "receivingPCRLabName": "National Reference Lab Abuja",
+    "sample": {
+      "sampleID": "SMP-00045"
+    },
+    "issueType": "PATIENT_ID_MISMATCH",
+    "issueName": "Patient ID mismatch",
+    "issueDetails": "Sample SMP-00045 patient ID does not match manifest record; cross-check required.",
+    "dateIssueReceived": "2025-09-03",
+    "dateIssueReported": "2025-09-04",
+    "reportedBy": "Data QA Officer"
+  }
+  

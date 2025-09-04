@@ -1,0 +1,300 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://example.org/schemas/eid-manifest.schema.json",
+    "title": "EID Manifest",
+    "description": "Schema for transmitting Early Infant Diagnosis (EID) sample requests from a sending facility/EMR to a receiving PCR laboratory.",
+    "type": "object",
+    "additionalProperties": false,
+  
+    "required": [
+      "sendingFacilityID",
+      "sendingFacilityName",
+      "receivingLabID",
+      "receivingLabName",
+      "manifestID",
+      "samplePackagedBy",
+      "courierRiderName",
+      "courierContact",
+      "sampleInformation"
+    ],
+  
+    "properties": {
+      "sendingFacilityID": {
+        "type": "string",
+        "description": "The unique identifier for the facility sending the sample."
+      },
+      "sendingFacilityName": {
+        "type": "string",
+        "description": "The name of the facility sending the sample."
+      },
+  
+      "receivingLabID": {
+        "type": "string",
+        "description": "The unique identifier for the PCR lab receiving the sample."
+      },
+      "receivingLabName": {
+        "type": "string",
+        "description": "The name of the PCR lab receiving the sample."
+      },
+  
+      "manifestID": {
+        "type": "string",
+        "description": "A unique identifier for a batch of samples. Assigned by the EMR."
+      },
+  
+      "dateScheduledForPickup": {
+        "type": "string",
+        "format": "date",
+        "description": "The date the samples are scheduled to be picked up."
+      },
+      "temperatureAtPickup": {
+        "type": "number",
+        "description": "The temperature of the samples at pickup time (°C)."
+      },
+  
+      "samplePackagedBy": {
+        "type": "string",
+        "description": "The name of the person who packaged the samples."
+      },
+      "courierRiderName": {
+        "type": "string",
+        "description": "The name of the 3PL rider who picked up the samples."
+      },
+      "courierContact": {
+        "type": "string",
+        "description": "The phone number of the 3PL rider who picked up the samples."
+      },
+  
+      "sampleInformation": {
+        "type": "array",
+        "minItems": 1,
+        "items": { "$ref": "#/$defs/EIDSample" }
+      }
+    },
+  
+    "$defs": {
+      "ID_TYPECODE": {
+        "type": "string",
+        "enum": ["HOSPITALNO", "RECENCY", "CLIENTID"],
+        "description": "Code set for patient ID realm/type."
+      },
+      "SEX": {
+        "type": "string",
+        "enum": ["F", "M"],
+        "description": "Sex code."
+      },
+      "YES_NO_UNKNOWN": {
+        "type": "string",
+        "enum": ["YES", "NO", "UNKNOWN"],
+        "description": "Yes/No/Unknown code."
+      },
+  
+      "EIDSample": {
+        "type": "object",
+        "additionalProperties": false,
+  
+        "required": [
+          "patientID",
+          "sampleID",
+          "firstName",
+          "surName",
+          "dateOfBirth",
+          "ageInMonths",
+          "sex",
+          "sampleCollectionDate",
+          "sampleCollectionTime",
+          "reasonForPCR/indicationForEID",
+          "rapidTestDone",
+          "artAdministeredToMother",
+          "babyReceived",
+          "babyEverBreastFed",
+          "babyBreastFeedingNow",
+          "ageBreastFeedingStoppedMonths",
+          "sampleOrderedBy",
+          "sampleOrderDate",
+          "sampleCollectedBy",
+          "dateSampleSent"
+        ],
+  
+        "properties": {
+          "patientID": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["idNumber", "idTypeCode"],
+            "properties": {
+              "idNumber": {
+                "type": "string",
+                "description": "An ID for the patient in a given realm; realm defined by idTypeCode."
+              },
+              "idTypeCode": {
+                "allOf": [{ "$ref": "#/$defs/ID_TYPECODE" }],
+                "description": "Coded type of patient ID."
+              }
+            }
+          },
+  
+          "sampleID": {
+            "type": "string",
+            "description": "A unique identifier for a particular sample as allocated by a facility."
+          },
+  
+          "firstName": { "type": "string", "description": "The patient's first name." },
+          "surName": { "type": "string", "description": "The patient's last/family name." },
+  
+          "dateOfBirth": {
+            "type": "string",
+            "format": "date",
+            "description": "The patient's date of birth (must be in the past)."
+          },
+          "ageInMonths": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "The patient's age in months."
+          },
+  
+          "sex": {
+            "allOf": [{ "$ref": "#/$defs/SEX" }],
+            "description": "The patient's gender."
+          },
+  
+          "sampleCollectionDate": {
+            "type": "string",
+            "format": "date",
+            "description": "The date the sample was collected."
+          },
+          "sampleCollectionTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The time the sample was actually collected (ISO 8601)."
+          },
+  
+          "reasonForPCR/indicationForEID": {
+            "type": "integer",
+            "description": "The reason for PCR (coded). Code set: REASON_FOR_PCR."
+          },
+  
+          "rapidTestDone": {
+            "type": "boolean",
+            "description": "Whether a rapid test was done (only for infants 9 months or older)."
+          },
+          "dateRapidTestDone": {
+            "type": "string",
+            "format": "date",
+            "description": "The date the rapid test was done (required if rapidTestDone is true)."
+          },
+          "resultOfRapidTest": {
+            "type": "string",
+            "description": "Result of rapid test (required if rapidTestDone is true). Code set: RAPID_TEST_RESULT."
+          },
+  
+          "artAdministeredToMother": {
+            "type": "integer",
+            "description": "Which ART (if any) was administered to the mother. Code set: ART_ADMINISTERED_MOTHER."
+          },
+          "babyReceived": {
+            "type": "integer",
+            "description": "Which ART (if any) the baby received. Code set: ART_ADMINISTERED_BABY."
+          },
+  
+          "babyEverBreastFed": {
+            "allOf": [{ "$ref": "#/$defs/YES_NO_UNKNOWN" }],
+            "description": "Whether the baby has ever been breastfed or not."
+          },
+          "babyBreastFeedingNow": {
+            "allOf": [{ "$ref": "#/$defs/YES_NO_UNKNOWN" }],
+            "description": "Whether the baby is currently breastfeeding or not."
+          },
+          "ageBreastFeedingStoppedMonths": {
+            "type": "integer",
+            "minimum": -1,
+            "description": "Age in months when breastfeeding stopped; use -1 if baby is still breastfeeding."
+          },
+  
+          "cotrimoxazoleGiven": {
+            "type": "string",
+            "description": "Whether Cotrimoxazole was given. Code set: COTRIMOXAZOLE_STATUS."
+          },
+  
+          "motherANCNo": {
+            "type": "string",
+            "description": "Mother ANC number."
+          },
+          "guardianPhoneNo": {
+            "type": "string",
+            "description": "Guardian phone number (conditionally required per program rules)."
+          },
+          "motherEntryPoint": {
+            "type": "string",
+            "description": "Mother entry point."
+          },
+          "motherPepfarID": {
+            "type": "string",
+            "description": "Mother PEPFAR ID."
+          },
+  
+          "sampleOrderedBy": {
+            "type": "string",
+            "description": "The clinician who ordered the sample to be tested."
+          },
+          "sampleOrderDate": {
+            "type": "string",
+            "format": "date",
+            "description": "The date the sample was ordered to be taken."
+          },
+          "sampleCollectedBy": {
+            "type": "string",
+            "description": "The name of the person who collected the sample."
+          },
+          "dateSampleSent": {
+            "type": "string",
+            "format": "date",
+            "description": "The date the sample was sent to the PCR lab."
+          }
+        },
+  
+        "allOf": [
+          {
+            "if": {
+              "properties": { "ageInMonths": { "minimum": 9 } },
+              "required": ["ageInMonths"]
+            },
+            "then": {
+              "required": ["rapidTestDone"]
+            }
+          },
+          {
+            "if": {
+              "properties": { "rapidTestDone": { "const": true } },
+              "required": ["rapidTestDone"]
+            },
+            "then": {
+              "required": ["dateRapidTestDone", "resultOfRapidTest"]
+            }
+          },
+          {
+            "if": {
+              "properties": { "babyBreastFeedingNow": { "const": "YES" } },
+              "required": ["babyBreastFeedingNow"]
+            },
+            "then": {
+              "properties": {
+                "ageBreastFeedingStoppedMonths": { "const": -1 }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": { "babyBreastFeedingNow": { "const": "NO" } },
+              "required": ["babyBreastFeedingNow"]
+            },
+            "then": {
+              "properties": {
+                "ageBreastFeedingStoppedMonths": { "minimum": 0 }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+  

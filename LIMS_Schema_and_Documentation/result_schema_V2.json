@@ -1,0 +1,178 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "title": "Viral Load Result Batch",
+    "description": "Result payload returned by PCR lab.",
+    "additionalProperties": false,
+  
+    "required": [
+      "manifestID",
+      "receivingFacilityID",
+      "receivingFacilityName",
+      "sendingPCRLabID",
+      "sendingPCRLabName",
+      "testType",
+      "viralLoadTestReport"
+    ],
+  
+    "properties": {
+      "manifestID": {
+        "type": "string",
+        "minLength": 10,
+        "maxLength": 10,
+        "description": "The manifest ID of the returned result"
+      },
+      "receivingFacilityID": { "type": "string", "minLength": 10, "maxLength": 20 },
+      "receivingFacilityName": { "type": "string", "minLength": 5, "maxLength": 30 },
+      "sendingPCRLabID": {
+        "type": "string",
+        "minLength": 10,
+        "maxLength": 30,
+        "description": "The identifier (e.g LIMS ID) of the PCR lab returning these results"
+      },
+      "sendingPCRLabName": { "type": "string", "minLength": 5, "maxLength": 30 },
+      "testType": {
+        "type": "integer",
+        "description": "The type of test result(s) being returned",
+        "minimum": 1,
+        "maximum": 2,
+        "enum": [1, 2]
+      },
+  
+      "viralLoadTestReport": {
+        "type": "array",
+        "minItems": 1,
+        "description": "List of per-sample results in the batch.",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+  
+          "required": [
+            "patientID",
+            "firstName",
+            "surName",
+            "sex",
+            "dateOfBirth",
+            "sampleID",
+            "pcrLabSampleNumber",
+            "visitDate",
+            "dateSampleReceivedAtPCRLab",
+            "testResult",
+            "resultDate",
+            "assayDate",
+            "approvalDate",
+            "dateResultDispatched",
+            "sampleStatus",
+            "sampleTestable",
+            "testedBy",
+            "approvedBy"
+          ],
+  
+          "properties": {
+            "patientID": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["idNumber", "idTypeCode"],
+                  "properties": {
+                    "idNumber": { "type": "string", "minLength": 10, "maxLength": 10 },
+                    "idTypeCode": {
+                      "type": "string",
+                      "minLength": 6,
+                      "maxLength": 15,
+                      "enum": ["HOSPITALNO", "RECENCY", "CLIENTID"]
+                    }
+                  }
+                }
+              ]
+            },
+  
+            "firstName": { "type": "string", "minLength": 2, "maxLength": 32 },
+            "surName": { "type": "string", "minLength": 2, "maxLength": 32 },
+            "sex": { "type": "string", "minLength": 1, "maxLength": 1, "enum": ["F", "M", "N", "U"] },
+            "dateOfBirth": { "type": "string", "format": "date" },
+  
+            "sampleID": {
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 20,
+              "description": "The registration number of the sample i.e Sample ID"
+            },
+            "pcrLabSampleNumber": {
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 20,
+              "description": "The sample number assigned in the PCR lab"
+            },
+  
+            "visitDate": { "type": "string", "format": "date" },
+            "dateSampleReceivedAtPCRLab": { "type": "string", "format": "date" },
+  
+            "testResult": {
+              "type": "string",
+              "description": "Actual test result (e.g., VL detection value)"
+            },
+            "resultDate": { "type": "string", "format": "date" },
+            "assayDate": { "type": "string", "format": "date" },
+            "approvalDate": { "type": "string", "format": "date" },
+            "dateResultDispatched": {
+              "type": "string",
+              "format": "date",
+              "description": "Date the EMR pulled the result from LIMS"
+            },
+  
+            "sampleStatus": {
+              "type": "integer",
+              "description": "State of the sample",
+              "minimum": 1,
+              "maximum": 5,
+              "default": 3,
+              "enum": [1, 2, 3, 4, 5]
+            },
+            "sampleTestable": { "type": "boolean", "description": "Whether the sample is valid or rejected" },
+  
+            "transferStatus": {
+              "type": "integer",
+              "description": "State of the transferred sample",
+              "minimum": 1,
+              "maximum": 4,
+              "default": 1,
+              "enum": [1, 2, 3, 4]
+            },
+  
+            "testedBy": { "type": "string", "description": "Who performed the test" },
+            "approvedBy": { "type": "string", "description": "Who approved results" },
+  
+            "sendingPCRLabID": {
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 30,
+              "description": "Identifier of the PCR lab receiving the transferred sample"
+            },
+            "sendingPCRLabName": {
+              "type": "string",
+              "minLength": 5,
+              "maxLength": 30,
+              "description": "Name of PCR lab receiving the transferred sample"
+            },
+            "dateTransferredOut": { "type": "string", "format": "date" },
+  
+            "reasonNotTested": {
+              "type": "integer",
+              "description": "Reason code why a sample was not testable",
+              "minimum": 1,
+              "maximum": 6,
+              "default": 1,
+              "enum": [1, 2, 3, 4, 5, 6]
+            },
+            "otherRejectionReaseon": { "type": "string", "description": "Other reason for rejection of sample" }
+          }
+        }
+      }
+    }
+  }
+  

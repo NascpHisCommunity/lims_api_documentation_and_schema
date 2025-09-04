@@ -1,0 +1,334 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://example.org/schemas/manifest-to-pcr-lab.schema.json",
+  "title": "PCR-Lab Manifest",
+  "description": "Schema for transmitting a specimen manifest from a sending facility/EMR to the receiving PCR laboratory.",
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "manifestID",
+    "dispatchDate",
+    "sendingFacilityID",
+    "sendingFacilityName",
+    "receivingPCRLabID",
+    "receivingPCRLabName",
+    "testType",
+    "specimenList"
+  ],
+
+  "properties": {
+
+    "manifestID": {
+      "type": "string",
+      "description": "10-character identifier that will also appear in the result file.",
+      "minLength": 10,
+      "maxLength": 10,
+      "pattern": "^[A-Z0-9]{10}$"
+    },
+
+    "dispatchDate": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the box and accompanying electronic manifest leave the sending facility."
+    },
+
+    "dateScheduledForPickup": {
+      "type": "string",
+      "format": "date",
+      "description": "The date the samples are scheduled to be picked up (optional)."
+    },
+
+    "temperatureAtPickup": {
+      "type": "number",
+      "description": "Temperature of samples at pickup time (°C, optional)."
+    },
+
+    "sendingFacilityID": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 20,
+      "pattern": "^[A-Z0-9]+$",
+      "description": "The unique identifier for the facility sending the sample."
+    },
+    "sendingFacilityName": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 30,
+      "description": "The name of the facility sending the sample."
+    },
+
+    "receivingPCRLabID": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 30,
+      "pattern": "^[A-Z0-9]+$",
+      "description": "The unique identifier for the PCR lab receiving the sample."
+    },
+    "receivingPCRLabName": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 30,
+      "description": "The name of the PCR lab receiving the sample."
+    },
+
+    "receivingLabID": {
+      "type": "string",
+      "description": "Alias of receivingPCRLabID (kept optional for compatibility)."
+    },
+    "receivingLabName": {
+      "type": "string",
+      "description": "Alias of receivingPCRLabName (kept optional for compatibility)."
+    },
+
+    "samplePackagedBy": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 64,
+      "description": "Name of the person who packaged the samples."
+    },
+
+    "courierRiderName": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 64,
+      "description": "Name of the 3PL rider who picked up the samples."
+    },
+
+    "courierContact": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 20,
+      "description": "Phone number of the 3PL rider who picked up the samples."
+    },
+
+    "testType": {
+      "type": "integer",
+      "description": "Kind of assay requested for every specimen in this manifest.",
+      "enum": [1, 2],
+      "minimum": 1,
+      "maximum": 2,
+      "examples": [1],
+      "default": 1
+    },
+
+    "courier": {
+      "type": "object",
+      "description": "Optional courier or dispatch information.",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 2, "maxLength": 30 },
+        "contactNumber": { "type": "string", "minLength": 5, "maxLength": 11 }
+      }
+    },
+
+    "specimenList": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/specimen" }
+    }
+  },
+
+  "$defs": {
+
+    "patientIdentifier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["idNumber", "idTypeCode"],
+      "properties": {
+        "idNumber": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 15,
+          "pattern": "^[A-Z0-9]+$",
+          "description": "An ID for the patient in some realm (recency, hospital, etc.)."
+        },
+        "idTypeCode": {
+          "type": "string",
+          "enum": ["HOSPITALNO", "RECENCY", "CLIENTID"],
+          "description": "Type code specifying the realm for idNumber."
+        }
+      }
+    },
+
+    "specimen": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sampleID",
+        "patientIDs",
+        "firstName",
+        "surName",
+        "sex",
+        "age",
+        "dateOfBirth",
+        "sampleType",
+        "indicationVLTest",
+        "sampleOrderedBy",
+        "sampleOrderDate",
+        "sampleCollectedBy",
+        "sampleCollectionDate",
+        "sampleCollectionTime",
+        "dateSampleSent",
+        "priority"
+      ],
+      "properties": {
+
+        "sampleID": {
+          "type": "string",
+          "description": "Registration number assigned at the sending facility.",
+          "minLength": 10,
+          "maxLength": 20,
+          "pattern": "^[A-Z0-9]+$"
+        },
+
+        "patientIDs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/patientIdentifier" }
+        },
+
+        "firstName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "The patient's first name."
+        },
+
+        "surName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "The patient's last/family name."
+        },
+
+        "sex": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1,
+          "enum": ["F", "M"],
+          "description": "The patient's gender."
+        },
+
+        "pregnantBreastFeedingStatus": {
+          "type": "string",
+          "description": "Pregnancy/breastfeeding status (conditionally required for relevant populations)."
+        },
+
+        "age": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 120,
+          "description": "The patient's age in years."
+        },
+
+        "dateOfBirth": {
+          "type": "string",
+          "format": "date",
+          "description": "The patient's date of birth."
+        },
+
+        "sampleType": {
+          "type": "string",
+          "enum": ["PLASMA", "WHOLE_BLOOD", "DBS", "SERUM"],
+          "description": "Type code specifying the sample type."
+        },
+
+        "indicationVLTest": {
+          "type": "string",
+          "description": "Indication for viral load test."
+        },
+
+        "artCommencementDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Date patient commenced ART (optional)."
+        },
+
+        "drugRegimen": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Drug regimen the patient is on (optional)."
+        },
+
+        "sampleOrderedBy": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 64,
+          "description": "Name of the clinician who ordered the test."
+        },
+
+        "sampleOrderDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Date the sample was ordered to be taken."
+        },
+
+        "sampleCollectedBy": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 64,
+          "description": "Name of the person who collected the sample."
+        },
+
+        "sampleCollectionDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Date the sample was actually collected."
+        },
+
+        "sampleCollectionTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Time (ISO 8601) the sample was actually collected."
+        },
+
+        "dateSampleSent": {
+          "type": "string",
+          "format": "date",
+          "description": "Date the sample was sent to the PCR lab."
+        },
+
+        "priority": {
+          "type": "integer",
+          "description": "1 = STAT / urgent, 2 = routine",
+          "enum": [1, 2],
+          "default": 2
+        },
+
+        "packagingCondition": {
+          "type": "integer",
+          "description": "1 = Ambient, 2 = Cold-chain, 3 = Frozen",
+          "enum": [1, 2, 3],
+          "default": 1
+        },
+
+        "sampleIntegrity": {
+          "type": "integer",
+          "description": "Sender’s preliminary assessment: 1 = Ok, 2 = Leakage, 3 = Haemolysed, 4 = Insufficient volume",
+          "enum": [1, 2, 3, 4],
+          "default": 1
+        },
+
+        "clinicalNotes": {
+          "type": "string",
+          "maxLength": 256,
+          "description": "Additional clinical notes (optional)."
+        }
+      },
+
+      "allOf": [
+        {
+          "if": {
+            "properties": { "sex": { "const": "F" } },
+            "required": ["sex"]
+          },
+          "then": {
+            "required": ["pregnantBreastFeedingStatus"]
+          }
+        }
+      ]
+    }
+  }
+}

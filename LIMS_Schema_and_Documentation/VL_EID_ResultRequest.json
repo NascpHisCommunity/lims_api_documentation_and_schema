@@ -1,0 +1,55 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://example.org/schemas/result-request.schema.json",
+    "title": "Result Request",
+    "description": "Schema for requesting Viral Load or EID results for a given manifest from the PCR laboratory.",
+    "type": "object",
+    "additionalProperties": false,
+  
+    "required": [
+      "sendingFacilityID",
+      "sendingFacilityName",
+      "receivingPCRLabID",
+      "receivingPCRLabName",
+      "testType",
+      "manifestID",
+      "transferStatus"
+    ],
+  
+    "properties": {
+      "sendingFacilityID": {
+        "type": "string",
+        "description": "The unique identifier for the facility requesting the result."
+      },
+      "sendingFacilityName": {
+        "type": "string",
+        "description": "The name of the facility requesting the result."
+      },
+  
+      "receivingPCRLabID": {
+        "type": "string",
+        "description": "The unique identifier for the PCR lab doing the analysis."
+      },
+      "receivingPCRLabName": {
+        "type": "string",
+        "description": "The name of the PCR lab doing the analysis."
+      },
+  
+      "testType": {
+        "type": "integer",
+        "description": "Type code specifying the type of result being requested. Code set: RESULT_TEST_TYPE.",
+        "enum": [1, 2]
+      },
+  
+      "manifestID": {
+        "type": "string",
+        "description": "The unique identifier for the batch whose results are being requested."
+      },
+  
+      "transferStatus": {
+        "type": "boolean",
+        "description": "Specifies whether the batch/sample was transferred."
+      }
+    }
+  }
+  
