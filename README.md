@@ -106,3 +106,63 @@ This repository includes realistic sample payloads for manifests, results, resul
 VL result scenarios include: valid tests, insufficient samples, haemolysis, leakage, and transfers.
 
 EID samples include: positive, negative, indeterminate, and breastfeeding condition logic.
+
+📊 Sample Payloads
+
+This repository includes realistic sample payloads for manifests, results, result requests, and notifications, to guide implementers.
+
+VL result scenarios include: valid tests, insufficient samples, haemolysis, leakage, and transfers.
+
+EID samples include: positive, negative, indeterminate, and breastfeeding condition logic.
+
+🔄 Data Flow
+```flowchart TD
+    A[Sending Facility / EMR] --> B[VL/EID Manifest Submission]
+    B --> C[PCR Lab LIMS]
+    C --> D[VL/EID Result Response]
+    A --> E[Result Request API]
+    D --> A
+    C --> F[Notification / Feedback]
+    F --> A
+```
+🚦 Error Handling
+
+400 Bad Request → Schema validation failed (missing/invalid fields).
+
+409 Conflict → Duplicate manifestID or sampleID.
+
+422 Unprocessable Entity → Invalid testResult format or codes.
+
+500 Server Error → Unexpected error at LIMS side.
+
+📌 Best Practices
+
+Always use ISO 8601 date/time (YYYY-MM-DD or YYYY-MM-DDTHH:mm:ssZ).
+
+Ensure consistent facility and lab codes across all schemas.
+
+For female patients in VL, include pregnantBreastFeedingStatus.
+
+In EID manifests, enforce breastfeeding/rapid test logic per schema rules.
+
+Validate payloads before submission using the provided schemas.
+
+🤝 Community of Practice
+
+This repository is maintained by the NMRS Community of Practice under NASCP to support:
+
+Improved LIMS–EMR interoperability
+
+Standardized data exchange protocols
+
+Strengthened data quality and reporting
+
+For contributions, please fork the repo and submit pull requests.
+
+📬 Contact
+
+National AIDS & STI Control Programme (NASCP)
+Federal Ministry of Health and Social Welfare, Nigeria
+
+Repository URL:
+👉 https://github.com/NascpHisCommunity/lims_api_documentation_and_schema
